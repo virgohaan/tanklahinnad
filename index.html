@@ -963,16 +963,58 @@ const API_URL = 'https://web-production-2ca3.up.railway.app/api/stations';
 let stations = { '95': [], '98': [], 'D': [], 'LPG': [] };
 let apiLoaded = false;
 
+let userLat = 59.437, userLng = 24.753; // Tallinn vaikimisi
+
+function getDistKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// Tanklate ligikaudsed koordinaadid
+const stationCoords = {
+  'Krooning': {lat:59.420, lng:24.710},
+  'Alexela':  {lat:59.435, lng:24.780},
+  'Circle K': {lat:59.440, lng:24.760},
+  'Neste':    {lat:59.445, lng:24.730},
+  'Olerex':   {lat:59.430, lng:24.790},
+  'JetOil':   {lat:59.425, lng:24.750},
+  'Terminal': {lat:59.415, lng:24.720},
+  'Hepa':     {lat:59.450, lng:24.800},
+  'GO':       {lat:59.410, lng:24.830},
+  'Saare':    {lat:58.250, lng:22.500},
+  'Premium':  {lat:59.400, lng:24.670},
+  'Eesti':    {lat:59.438, lng:24.745},
+  'Texor':    {lat:59.432, lng:24.762},
+  'Anna':     {lat:59.428, lng:24.771},
+  'OBB':      {lat:59.441, lng:24.783},
+};
+
 async function loadFromAPI() {
   try {
-    document.getElementById('location-label').textContent = 'Laadin andmeid...';
+    document.getElementById('location-label').textContent = 'Tuvastab asukohta...';
+
+    // GPS päring
+    if (navigator.geolocation) {
+      await new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+          pos => { userLat = pos.coords.latitude; userLng = pos.coords.longitude; resolve(); },
+          () => resolve(),
+          {timeout: 5000}
+        );
+      });
+    }
+
     const res = await fetch(API_URL);
     const data = await res.json();
     const raw = data.stations || [];
 
     stations = { '95': [], '98': [], 'D': [], 'LPG': [], 'CNG': [] };
     raw.forEach(s => {
-      const dist = Math.random() * 4 + 0.3;
+      const coords = stationCoords[s.brand] || stationCoords[s.name.split(' ')[0]] || {lat:59.437+Math.random()*0.02-0.01, lng:24.753+Math.random()*0.03-0.015};
+      const dist = parseFloat(getDistKm(userLat, userLng, coords.lat, coords.lng).toFixed(1));
       const mins = Math.round(dist * 2.2);
       ['95','98','D','LPG','CNG'].forEach(f => {
         if (s.prices[f] !== null && s.prices[f] !== undefined) {
@@ -981,17 +1023,27 @@ async function loadFromAPI() {
             brand: s.name,
             addr: 'Eesti',
             price: s.prices[f],
-            dist: parseFloat(dist.toFixed(1)),
+            dist: dist,
             min: mins
           });
         }
       });
     });
 
-    const updated = new Date(data.updated * 1000);
-    const mins = Math.round((Date.now() - updated) / 60000);
-    document.getElementById('location-label').textContent =
-      `Tallinn · uuendatud ${mins} min tagasi`;
+    // Leia linna nimi reverse geocodinguga
+    try {
+      const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${userLat}&lon=${userLng}&format=json`);
+      const geoData = await geo.json();
+      const linnaosa = geoData.address.suburb || geoData.address.neighbourhood || geoData.address.city || 'Sinu asukoht';
+      const linn = geoData.address.city || geoData.address.town || '';
+      const updated = new Date(data.updated * 1000);
+      const mins = Math.round((Date.now() - updated) / 60000);
+      document.getElementById('location-label').textContent = `${linnaosa}, ${linn} · ${mins} min tagasi`;
+    } catch(e) {
+      const updated = new Date(data.updated * 1000);
+      const mins = Math.round((Date.now() - updated) / 60000);
+      document.getElementById('location-label').textContent = `Sinu asukoht · ${mins} min tagasi`;
+    }
 
     apiLoaded = true;
     renderBrands();
