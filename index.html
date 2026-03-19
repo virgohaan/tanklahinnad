@@ -959,40 +959,72 @@
 </div>
 
 <script>
-const stations = {
+const API_URL = 'https://web-production-2ca3.up.railway.app/api/stations';
+let stations = { '95': [], '98': [], 'D': [], 'LPG': [] };
+let apiLoaded = false;
+
+async function loadFromAPI() {
+  try {
+    document.getElementById('location-label').textContent = 'Laadin andmeid...';
+    const res = await fetch(API_URL);
+    const data = await res.json();
+    const raw = data.stations || [];
+
+    stations = { '95': [], '98': [], 'D': [], 'LPG': [], 'CNG': [] };
+    raw.forEach(s => {
+      const dist = Math.random() * 4 + 0.3;
+      const mins = Math.round(dist * 2.2);
+      ['95','98','D','LPG','CNG'].forEach(f => {
+        if (s.prices[f] !== null && s.prices[f] !== undefined) {
+          stations[f].push({
+            name: s.name,
+            brand: s.name,
+            addr: 'Eesti',
+            price: s.prices[f],
+            dist: parseFloat(dist.toFixed(1)),
+            min: mins
+          });
+        }
+      });
+    });
+
+    const updated = new Date(data.updated * 1000);
+    const mins = Math.round((Date.now() - updated) / 60000);
+    document.getElementById('location-label').textContent =
+      `Tallinn · uuendatud ${mins} min tagasi`;
+
+    apiLoaded = true;
+    renderBrands();
+    renderNearby();
+  } catch(e) {
+    document.getElementById('location-label').textContent = 'Server ei vasta — kasutan demo andmeid';
+    stations = stationsFallback;
+    renderBrands();
+    renderNearby();
+  }
+}
+
+const stationsFallback = {
   '95': [
-    {name:'Krooning Sõpruse',   brand:'Krooning', addr:'Sõpruse pst 172', price:1.629, dist:4.5, min:10},
-    {name:'Neste Peterburi',    brand:'Neste',    addr:'Peterburi tee 47',price:1.639, dist:1.2, min:3},
-    {name:'Olerex Ülemiste',    brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.649, dist:0.8, min:2},
-    {name:'Circle K Viru',      brand:'Circle K', addr:'Narva mnt 5',     price:1.659, dist:0.4, min:1},
-    {name:'Alexela Magdaleena', brand:'Alexela',  addr:'Magdaleena 18',   price:1.669, dist:2.1, min:5},
-    {name:'Neste Kadaka',       brand:'Neste',    addr:'Kadaka tee 52',   price:1.639, dist:3.1, min:7},
-    {name:'Circle K Ülemiste',  brand:'Circle K', addr:'Järvevana tee 3', price:1.655, dist:1.9, min:4},
-    {name:'Olerex Sõpruse',     brand:'Olerex',   addr:'Sõpruse pst 201', price:1.645, dist:3.8, min:8},
+    {name:'Krooning Sõpruse', brand:'Krooning', addr:'Sõpruse pst 172', price:1.629, dist:4.5, min:10},
+    {name:'Neste Peterburi',  brand:'Neste',    addr:'Peterburi tee 47',price:1.639, dist:1.2, min:3},
+    {name:'Olerex Ülemiste',  brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.649, dist:0.8, min:2},
+    {name:'Circle K Viru',   brand:'Circle K', addr:'Narva mnt 5',     price:1.659, dist:0.4, min:1},
+    {name:'Alexela',          brand:'Alexela',  addr:'Magdaleena 18',   price:1.669, dist:2.1, min:5},
   ],
   '98': [
-    {name:'Krooning Sõpruse',   brand:'Krooning', addr:'Sõpruse pst 172', price:1.729, dist:4.5, min:10},
-    {name:'Neste Peterburi',    brand:'Neste',    addr:'Peterburi tee 47',price:1.749, dist:1.2, min:3},
-    {name:'Olerex Ülemiste',    brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.759, dist:0.8, min:2},
-    {name:'Circle K Viru',      brand:'Circle K', addr:'Narva mnt 5',     price:1.769, dist:0.4, min:1},
-    {name:'Alexela Magdaleena', brand:'Alexela',  addr:'Magdaleena 18',   price:1.789, dist:2.1, min:5},
-    {name:'Neste Kadaka',       brand:'Neste',    addr:'Kadaka tee 52',   price:1.749, dist:3.1, min:7},
-    {name:'Circle K Ülemiste',  brand:'Circle K', addr:'Järvevana tee 3', price:1.765, dist:1.9, min:4},
+    {name:'Krooning Sõpruse', brand:'Krooning', addr:'Sõpruse pst 172', price:1.729, dist:4.5, min:10},
+    {name:'Neste Peterburi',  brand:'Neste',    addr:'Peterburi tee 47',price:1.749, dist:1.2, min:3},
+    {name:'Olerex Ülemiste',  brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.759, dist:0.8, min:2},
   ],
   'D': [
-    {name:'Krooning Sõpruse',   brand:'Krooning', addr:'Sõpruse pst 172', price:1.509, dist:4.5, min:10},
-    {name:'Olerex Ülemiste',    brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.529, dist:0.8, min:2},
-    {name:'Neste Peterburi',    brand:'Neste',    addr:'Peterburi tee 47',price:1.539, dist:1.2, min:3},
-    {name:'Circle K Viru',      brand:'Circle K', addr:'Narva mnt 5',     price:1.549, dist:0.4, min:1},
-    {name:'Alexela Magdaleena', brand:'Alexela',  addr:'Magdaleena 18',   price:1.559, dist:2.1, min:5},
-    {name:'Olerex Sõpruse',     brand:'Olerex',   addr:'Sõpruse pst 201', price:1.525, dist:3.8, min:8},
+    {name:'Krooning Sõpruse', brand:'Krooning', addr:'Sõpruse pst 172', price:1.509, dist:4.5, min:10},
+    {name:'Olerex Ülemiste',  brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.529, dist:0.8, min:2},
+    {name:'Neste Peterburi',  brand:'Neste',    addr:'Peterburi tee 47',price:1.539, dist:1.2, min:3},
   ],
   'LPG': [
-    {name:'Circle K Ülemiste',  brand:'Circle K', addr:'Järvevana tee 3', price:0.725, dist:1.9, min:4},
-    {name:'Circle K Viru',      brand:'Circle K', addr:'Narva mnt 5',     price:0.729, dist:0.4, min:1},
-    {name:'Olerex Ülemiste',    brand:'Olerex',   addr:'Tartu mnt 84b',   price:0.739, dist:0.8, min:2},
-    {name:'Neste Peterburi',    brand:'Neste',    addr:'Peterburi tee 47',price:0.749, dist:1.2, min:3},
-    {name:'Alexela Magdaleena', brand:'Alexela',  addr:'Magdaleena 18',   price:0.759, dist:2.1, min:5},
+    {name:'Circle K Viru',   brand:'Circle K', addr:'Narva mnt 5',     price:0.729, dist:0.4, min:1},
+    {name:'Olerex Ülemiste',  brand:'Olerex',   addr:'Tartu mnt 84b',   price:0.739, dist:0.8, min:2},
   ],
 };
 
@@ -1451,8 +1483,7 @@ function resetRoute() {
 }
 
 // ── INIT ──
-renderBrands();
-renderNearby();
+loadFromAPI();
 </script>
 </body>
 </html>
