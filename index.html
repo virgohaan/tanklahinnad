@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tanklahinnad.ee — leia parim kütusehind</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --white: #ffffff;
+    --off: #f5f6f8;
+    --off2: #eef0f3;
+    --border: #e2e5ea;
+    --border2: #cdd1d8;
+    --text: #111318;
+    --muted: #6b717d;
+    --hint: #9ea5b0;
+    --green: #1a7a4a;
+    --green-bg: #eaf5ef;
+    --green-border: #b6dfc8;
+    --blue: #1558d6;
+    --blue-bg: #eaf0fd;
+    --blue-border: #b3c9f8;
+    --red: #c0392b;
+    --red-bg: #fdf0ee;
+    --amber: #8a5e00;
+    --amber-bg: #fef8e7;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --radius-pill: 100px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+    --shadow-md: 0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--green); }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .live-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .live-dot::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #27ae60;
+    animation: blink 2s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── LAYOUT ── */
+  .app {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .tab {
+    flex: 1;
+    padding: 10px 0;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .tab svg { width: 15px; height: 15px; }
+
+  .tab.active {
+    background: var(--text);
+    color: var(--white);
+  }
+
+  .tab:not(.active):hover {
+    background: var(--off);
+    color: var(--text);
+  }
+
+  /* ── CONTROLS BAR ── */
+  .controls {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .ctrl-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--hint);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .chip-group { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  .chip {
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .chip:hover { border-color: var(--border2); color: var(--text); }
+
+  .chip.active {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--white);
+  }
+
+  .chip.brand-active {
+    background: var(--blue-bg);
+    border-color: var(--blue-border);
+    color: var(--blue);
+  }
+
+  .divider-v {
+    width: 1px;
+    height: 28px;
+    background: var(--border);
+  }
+
+  /* ── WINNER CARD ── */
+  .winner-card {
+    background: var(--white);
+    border: 1.5px solid var(--green-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+    transition: border-color 0.15s;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .winner-card:hover { border-color: var(--green); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .winner-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--green-bg);
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--green-border);
+    margin-bottom: 10px;
+    letter-spacing: 0.2px;
+  }
+
+  .winner-inner {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .winner-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.2;
+  }
+
+  .winner-addr {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .winner-stats {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+
+  .price-big {
+    font-family: 'DM Mono', monospace;
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .price-unit {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .winner-meta {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .winner-meta strong { color: var(--green); font-weight: 500; }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--blue);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap;
+    transition: background 0.15s;
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  .nav-btn:hover { background: #0f44b8; }
+
+  /* ── STATION LIST ── */
+  .station-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .station-card:hover {
+    border-color: var(--border2);
+    box-shadow: var(--shadow);
+  }
+
+  .rank {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--off);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .station-info { flex: 1; min-width: 0; }
+
+  .station-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .station-sub {
+    font-size: 12px;
+    color: var(--hint);
+    margin-top: 1px;
+  }
+
+  .station-price-col { text-align: right; flex-shrink: 0; }
+
+  .station-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .station-diff {
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 2px;
+  }
+
+  .diff-more { color: var(--red); }
+  .diff-best { color: var(--green); }
+
+  /* ── HOURLY CHART ── */
+  .hourly-box {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-top: 16px;
+    box-shadow: var(--shadow);
+  }
+
+  .hourly-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--hint);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .hourly-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 52px;
+    margin-bottom: 5px;
+  }
+
+  .hourly-bar {
+    flex: 1;
+    border-radius: 3px 3px 0 0;
+    background: var(--off2);
+    transition: background 0.3s;
+  }
+
+  .hourly-bar.now { background: var(--text); }
+  .hourly-bar.cheapest { background: var(--green); }
+
+  .hourly-times {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--hint);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 10px;
+  }
+
+  .hourly-tip {
+    background: var(--green-bg);
+    border: 1px solid var(--green-border);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 500;
+  }
+
+  /* ── QUICK TAB ── */
+  .quick-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .quick-idle {
+    padding: 48px 24px;
+    text-align: center;
+  }
+
+  .quick-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+
+  .quick-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .big-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--text);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity 0.15s;
+  }
+
+  .big-btn:hover { opacity: 0.88; }
+
+  .loading-panel {
+    padding: 40px 24px;
+    text-align: center;
+    display: none;
+  }
+
+  .spinner {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 3px solid var(--off2);
+    border-top-color: var(--text);
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 20px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-steps { margin-top: 20px; text-align: left; max-width: 260px; margin-left: auto; margin-right: auto; }
+
+  .lstep {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0; opacity: 0.25; transition: opacity 0.4s;
+    font-size: 13px; color: var(--muted);
+  }
+
+  .lstep-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border2); flex-shrink: 0; transition: background 0.4s;
+  }
+
+  .quick-result { padding: 20px; display: none; }
+
+  /* ── ROUTE TAB ── */
+  .route-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: visible;
+  }
+
+  .route-input-wrap {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .route-input {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: var(--off);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: all 0.15s;
+  }
+
+  .route-input:focus {
+    background: var(--white);
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px var(--blue-bg);
+  }
+
+  .sugg-box {
+    position: absolute;
+    top: calc(100% - 8px);
+    left: 16px; right: 16px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    z-index: 50;
+    overflow: hidden;
+    display: none;
+  }
+
+  .sugg-item {
+    padding: 11px 16px;
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid var(--off2);
+    transition: background 0.1s;
+  }
+
+  .sugg-item:last-child { border-bottom: none; }
+  .sugg-item:hover { background: var(--off); }
+
+  .sugg-icon { color: var(--hint); flex-shrink: 0; }
+
+  .route-body { padding: 16px; }
+
+  .quick-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+
+  .quick-chip {
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: var(--white);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .quick-chip:hover {
+    background: var(--blue-bg);
+    border-color: var(--blue-border);
+    color: var(--blue);
+  }
+
+  /* ── ROUTE RESULT ── */
+  .route-line {
+    position: relative;
+    padding-left: 52px;
+    margin-bottom: 8px;
+  }
+
+  .route-line::before {
+    content: '';
+    position: absolute;
+    left: 19px; top: 38px; bottom: -8px;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .route-line:last-child::before { display: none; }
+
+  .route-dot {
+    position: absolute;
+    left: 0; top: 4px;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--border);
+    background: var(--white);
+    flex-shrink: 0;
+  }
+
+  .route-dot.start { border-color: var(--blue); background: var(--blue-bg); }
+  .route-dot.stop  { border-color: var(--green); background: var(--green-bg); }
+  .route-dot.end   { border-color: var(--border2); background: var(--off); }
+
+  .route-stop-card {
+    background: var(--green-bg);
+    border: 1px solid var(--green-border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  .route-stop-card:hover { border-color: var(--green); }
+
+  .route-stop-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+
+  .route-stop-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--green);
+    letter-spacing: 0.3px;
+  }
+
+  .route-stop-price {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .route-stop-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .route-stop-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .route-detail {
+    background: var(--off);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-top: 8px;
+    display: none;
+  }
+
+  .route-detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .detail-val { font-size: 16px; font-weight: 600; color: var(--text); }
+  .detail-key { font-size: 11px; color: var(--hint); margin-top: 2px; }
+
+  .alt-list { margin-top: 12px; }
+
+  .outline-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--white);
+    color: var(--blue);
+    border: 1px solid var(--blue-border);
+    border-radius: var(--radius-pill);
+    padding: 10px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background 0.15s;
+    width: 100%;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .outline-btn:hover { background: var(--blue-bg); }
+
+  /* ── DETAIL MODAL ── */
+  .modal-bg {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .modal-bg.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 420px;
+    width: 100%;
+    box-shadow: var(--shadow-md);
+    animation: fadeUp 0.2s ease;
+  }
+
+  .modal-head {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .modal-close {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--off); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 16px; font-family: sans-serif;
+    transition: background 0.15s; flex-shrink: 0;
+  }
+
+  .modal-close:hover { background: var(--off2); }
+
+  .modal-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px; margin-bottom: 16px;
+  }
+
+  .modal-stat {
+    background: var(--off);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+  }
+
+  .modal-stat-val { font-size: 20px; font-weight: 600; color: var(--text); }
+  .modal-stat-key { font-size: 11px; color: var(--hint); margin-top: 3px; }
+
+  .modal-note {
+    background: var(--off);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  /* ── EMPTY ── */
+  .empty { text-align: center; padding: 32px; color: var(--hint); font-size: 14px; }
+
+  /* ── SECTION HEADER ── */
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 500;
+    color: var(--hint); letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .topbar { padding: 0 16px; }
+    .app { padding: 16px 12px 48px; }
+    .controls { gap: 8px; padding: 12px; }
+    .winner-inner { flex-direction: column; }
+    .price-big { font-size: 30px; }
+    .quick-title { font-size: 22px; }
+    .divider-v { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a class="logo" href="#">tankla<span>hinnad</span>.ee</a>
+  <div class="topbar-right">
+    <div class="live-dot">otseandmed</div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('nearby')" id="tab-nearby">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8" cy="6.5" r="3"/><path d="M8 1C5.2 1 3 3.2 3 6.5c0 4 5 8.5 5 8.5s5-4.5 5-8.5C13 3.2 10.8 1 8 1z"/></svg>
+      Lähim odav
+    </button>
+    <button class="tab" onclick="switchTab('quick')" id="tab-quick">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 2v4l3 2"/><circle cx="8" cy="8" r="6"/></svg>
+      Kiirvalik
+    </button>
+    <button class="tab" onclick="switchTab('route')" id="tab-route">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 3h4v4H3zM9 9h4v4H9M3 13l10-10"/></svg>
+      Teekonnal
+    </button>
+  </div>
+
+  <!-- ══ NEARBY PANEL ══ -->
+  <div id="panel-nearby">
+    <div class="controls">
+      <span class="ctrl-label">Kütus</span>
+      <div class="chip-group" id="fuel-chips">
+        <button class="chip active" onclick="setFuel('95')">95</button>
+        <button class="chip" onclick="setFuel('98')">98</button>
+        <button class="chip" onclick="setFuel('D')">Diisel</button>
+        <button class="chip" onclick="setFuel('LPG')">LPG</button>
+      </div>
+      <div class="divider-v"></div>
+      <span class="ctrl-label">Järjesta</span>
+      <div class="chip-group" id="sort-chips">
+        <button class="chip active" onclick="setSort('smart')">Parim valik</button>
+        <button class="chip" onclick="setSort('price')">Odavaim</button>
+        <button class="chip" onclick="setSort('dist')">Lähim</button>
+      </div>
+      <div class="divider-v"></div>
+      <span class="ctrl-label">Bränd</span>
+      <div class="chip-group" id="brand-chips"></div>
+    </div>
+
+    <div class="section-head">
+      <span class="section-label" id="sort-label">Soovitatav · hind + kaugus</span>
+      <span class="section-label" id="location-label">Tallinn, Kesklinn</span>
+    </div>
+
+    <div id="winner-area"></div>
+    <div id="station-list"></div>
+    <div id="empty-msg" class="empty" style="display:none;">Selle brändiga tanklaid ei leitud lähikonnas.</div>
+
+    <div class="hourly-box">
+      <div class="hourly-label">Hind tunni järgi — täna</div>
+      <div class="hourly-bars" id="hourly-bars"></div>
+      <div class="hourly-times">
+        <span>00</span><span>06</span><span>12</span><span>18</span><span>24</span>
+      </div>
+      <div class="hourly-tip" id="hourly-tip"></div>
+    </div>
+  </div>
+
+  <!-- ══ QUICK PANEL ══ -->
+  <div id="panel-quick" style="display:none;">
+    <div class="controls" style="margin-bottom:16px;">
+      <span class="ctrl-label">Kütus</span>
+      <div class="chip-group" id="q-fuel-chips">
+        <button class="chip active" onclick="setQFuel('95')">95</button>
+        <button class="chip" onclick="setQFuel('98')">98</button>
+        <button class="chip" onclick="setQFuel('D')">Diisel</button>
+        <button class="chip" onclick="setQFuel('LPG')">LPG</button>
+      </div>
+    </div>
+    <div class="quick-panel">
+      <div class="quick-idle" id="q-idle">
+        <div class="quick-title">Leia parim tankla<br>praegu</div>
+        <div class="quick-sub">Arvestab hinda ja kaugust koos</div>
+        <button class="big-btn" onclick="startQuick()">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="9" r="7"/><path d="M9 5.5v3.5l2.5 1.5"/></svg>
+          Otsi praegu
+        </button>
+      </div>
+      <div class="loading-panel" id="q-loading">
+        <div class="spinner"></div>
+        <div style="font-size:14px;color:var(--muted);" id="q-load-txt">GPS tuvastab asukohta...</div>
+        <div class="loading-steps">
+          <div class="lstep" id="qs1"><div class="lstep-dot" id="qs1d"></div>GPS asukoht tuvastatud</div>
+          <div class="lstep" id="qs2"><div class="lstep-dot" id="qs2d"></div>Lähimad tanklad leitud</div>
+          <div class="lstep" id="qs3"><div class="lstep-dot" id="qs3d"></div>Hinnad võrreldud</div>
+          <div class="lstep" id="qs4"><div class="lstep-dot" id="qs4d"></div>Parim valik selge</div>
+        </div>
+      </div>
+      <div class="quick-result" id="q-result">
+        <div id="q-winner-card"></div>
+        <button class="outline-btn" onclick="resetQuick()" style="margin-top:12px;">Otsi uuesti</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ROUTE PANEL ══ -->
+  <div id="panel-route" style="display:none;">
+    <div class="controls" style="margin-bottom:16px;">
+      <span class="ctrl-label">Kütus</span>
+      <div class="chip-group" id="r-fuel-chips">
+        <button class="chip active" onclick="setRFuel('95')">95</button>
+        <button class="chip" onclick="setRFuel('98')">98</button>
+        <button class="chip" onclick="setRFuel('D')">Diisel</button>
+        <button class="chip" onclick="setRFuel('LPG')">LPG</button>
+      </div>
+    </div>
+    <div class="route-panel">
+      <div class="route-input-wrap">
+        <input class="route-input" id="route-input" type="text" placeholder="Kuhu sõidad? nt Tartu, Pärnu, Narva..." oninput="showRouteSugg(this.value)">
+        <div class="sugg-box" id="route-sugg"></div>
+      </div>
+      <div class="route-body">
+        <div id="r-idle">
+          <div class="section-label" style="margin-bottom:10px;">Populaarsed sihtkohad</div>
+          <div class="quick-chips">
+            <button class="quick-chip" onclick="selectRoute('Tartu')">Tartu</button>
+            <button class="quick-chip" onclick="selectRoute('Pärnu')">Pärnu</button>
+            <button class="quick-chip" onclick="selectRoute('Narva')">Narva</button>
+            <button class="quick-chip" onclick="selectRoute('Rakvere')">Rakvere</button>
+            <button class="quick-chip" onclick="selectRoute('Haapsalu')">Haapsalu</button>
+            <button class="quick-chip" onclick="selectRoute('Viljandi')">Viljandi</button>
+          </div>
+          <button class="big-btn" id="r-search-btn" onclick="startRoute()" disabled style="width:100%;justify-content:center;opacity:0.4;cursor:not-allowed;border-radius:12px;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M11 11l3 3"/></svg>
+            Otsi tanklaid teekonnal
+          </button>
+        </div>
+        <div id="r-loading" style="display:none;text-align:center;padding:32px 0;">
+          <div class="spinner"></div>
+          <div style="font-size:14px;color:var(--muted);" id="r-load-txt">Analüüsin marsruuti...</div>
+          <div class="loading-steps">
+            <div class="lstep" id="rs1"><div class="lstep-dot" id="rs1d"></div>GPS asukoht tuvastatud</div>
+            <div class="lstep" id="rs2"><div class="lstep-dot" id="rs2d"></div>Marsruut kaardistatud</div>
+            <div class="lstep" id="rs3"><div class="lstep-dot" id="rs3d"></div>Teekonnal olevad tanklad leitud</div>
+            <div class="lstep" id="rs4"><div class="lstep-dot" id="rs4d"></div>Parim hind valitud</div>
+          </div>
+        </div>
+        <div id="r-result" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- DETAIL MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="closeModal(event)">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const stations = {
+  '95': [
+    {name:'Krooning Sõpruse',   brand:'Krooning', addr:'Sõpruse pst 172', price:1.629, dist:4.5, min:10},
+    {name:'Neste Peterburi',    brand:'Neste',    addr:'Peterburi tee 47',price:1.639, dist:1.2, min:3},
+    {name:'Olerex Ülemiste',    brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.649, dist:0.8, min:2},
+    {name:'Circle K Viru',      brand:'Circle K', addr:'Narva mnt 5',     price:1.659, dist:0.4, min:1},
+    {name:'Alexela Magdaleena', brand:'Alexela',  addr:'Magdaleena 18',   price:1.669, dist:2.1, min:5},
+    {name:'Neste Kadaka',       brand:'Neste',    addr:'Kadaka tee 52',   price:1.639, dist:3.1, min:7},
+    {name:'Circle K Ülemiste',  brand:'Circle K', addr:'Järvevana tee 3', price:1.655, dist:1.9, min:4},
+    {name:'Olerex Sõpruse',     brand:'Olerex',   addr:'Sõpruse pst 201', price:1.645, dist:3.8, min:8},
+  ],
+  '98': [
+    {name:'Krooning Sõpruse',   brand:'Krooning', addr:'Sõpruse pst 172', price:1.729, dist:4.5, min:10},
+    {name:'Neste Peterburi',    brand:'Neste',    addr:'Peterburi tee 47',price:1.749, dist:1.2, min:3},
+    {name:'Olerex Ülemiste',    brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.759, dist:0.8, min:2},
+    {name:'Circle K Viru',      brand:'Circle K', addr:'Narva mnt 5',     price:1.769, dist:0.4, min:1},
+    {name:'Alexela Magdaleena', brand:'Alexela',  addr:'Magdaleena 18',   price:1.789, dist:2.1, min:5},
+    {name:'Neste Kadaka',       brand:'Neste',    addr:'Kadaka tee 52',   price:1.749, dist:3.1, min:7},
+    {name:'Circle K Ülemiste',  brand:'Circle K', addr:'Järvevana tee 3', price:1.765, dist:1.9, min:4},
+  ],
+  'D': [
+    {name:'Krooning Sõpruse',   brand:'Krooning', addr:'Sõpruse pst 172', price:1.509, dist:4.5, min:10},
+    {name:'Olerex Ülemiste',    brand:'Olerex',   addr:'Tartu mnt 84b',   price:1.529, dist:0.8, min:2},
+    {name:'Neste Peterburi',    brand:'Neste',    addr:'Peterburi tee 47',price:1.539, dist:1.2, min:3},
+    {name:'Circle K Viru',      brand:'Circle K', addr:'Narva mnt 5',     price:1.549, dist:0.4, min:1},
+    {name:'Alexela Magdaleena', brand:'Alexela',  addr:'Magdaleena 18',   price:1.559, dist:2.1, min:5},
+    {name:'Olerex Sõpruse',     brand:'Olerex',   addr:'Sõpruse pst 201', price:1.525, dist:3.8, min:8},
+  ],
+  'LPG': [
+    {name:'Circle K Ülemiste',  brand:'Circle K', addr:'Järvevana tee 3', price:0.725, dist:1.9, min:4},
+    {name:'Circle K Viru',      brand:'Circle K', addr:'Narva mnt 5',     price:0.729, dist:0.4, min:1},
+    {name:'Olerex Ülemiste',    brand:'Olerex',   addr:'Tartu mnt 84b',   price:0.739, dist:0.8, min:2},
+    {name:'Neste Peterburi',    brand:'Neste',    addr:'Peterburi tee 47',price:0.749, dist:1.2, min:3},
+    {name:'Alexela Magdaleena', brand:'Alexela',  addr:'Magdaleena 18',   price:0.759, dist:2.1, min:5},
+  ],
+};
+
+const hourly = {
+  '95': [1.659,1.659,1.659,1.659,1.659,1.659,1.649,1.645,1.639,1.639,1.639,1.639,1.639,1.639,1.639,1.649,1.659,1.669,1.669,1.669,1.659,1.659,1.659,1.659],
+  '98': [1.769,1.769,1.769,1.769,1.769,1.769,1.759,1.749,1.749,1.749,1.749,1.749,1.749,1.749,1.749,1.759,1.769,1.779,1.779,1.779,1.769,1.769,1.769,1.769],
+  'D':  [1.539,1.539,1.539,1.539,1.539,1.539,1.529,1.519,1.509,1.509,1.509,1.509,1.509,1.509,1.519,1.529,1.539,1.549,1.549,1.549,1.539,1.539,1.539,1.539],
+  'LPG':[0.749,0.749,0.749,0.749,0.749,0.749,0.739,0.729,0.729,0.729,0.729,0.729,0.729,0.729,0.739,0.749,0.759,0.759,0.759,0.759,0.749,0.749,0.749,0.749],
+};
+
+const routeData = {
+  'Tartu':   {km:186,h:'1h 55min',stops:[{name:'Krooning Jüri',addr:'Peterburi tee 101',price:1.619,detour:0.2,detourMin:1},{name:'Neste Loo',addr:'Peterburi tee 38',price:1.639,detour:0,detourMin:0},{name:'Olerex Mäo',addr:'Tallinn-Tartu mnt',price:1.629,detour:0.4,detourMin:2}]},
+  'Pärnu':   {km:130,h:'1h 20min',stops:[{name:'Alexela Märjamaa',addr:'Tallinn-Pärnu mnt',price:1.625,detour:0.3,detourMin:1},{name:'Neste Rapla',addr:'Tallinn-Pärnu mnt',price:1.639,detour:0,detourMin:0},{name:'Olerex Pärnu',addr:'Riia mnt 12',price:1.635,detour:0.5,detourMin:2}]},
+  'Narva':   {km:210,h:'2h 10min',stops:[{name:'Krooning Rakvere',addr:'Haljala tee 2',price:1.615,detour:0.8,detourMin:3},{name:'Olerex Jõhvi',addr:'Narva mnt 4',price:1.619,detour:0,detourMin:0},{name:'Neste Rakvere',addr:'Tallinn mnt 21',price:1.629,detour:0.2,detourMin:1}]},
+  'Rakvere': {km:98, h:'1h 02min',stops:[{name:'Olerex Rakvere',addr:'Haljala tee 2',price:1.625,detour:0.6,detourMin:2},{name:'Neste Aegviidu',addr:'Tallinn-Narva mnt',price:1.635,detour:0,detourMin:0}]},
+  'Haapsalu':{km:100,h:'1h 05min',stops:[{name:'Alexela Haapsalu',addr:'Ehitajate tee 4',price:1.625,detour:0.3,detourMin:1},{name:'Neste Keila',addr:'Tallinn-Haapsalu mnt',price:1.632,detour:0.2,detourMin:1}]},
+  'Viljandi':{km:162,h:'1h 45min',stops:[{name:'Olerex Türi',addr:'Tallinn-Viljandi mnt',price:1.622,detour:0.3,detourMin:1},{name:'Neste Viljandi',addr:'Tartu mnt 6',price:1.639,detour:0.4,detourMin:2}]},
+};
+
+const suggList = ['Tartu','Pärnu','Narva','Rakvere','Haapsalu','Viljandi','Jõhvi','Türi','Rapla','Keila','Jõgeva','Kuressaare'];
+const brands = ['Neste','Circle K','Olerex','Alexela','Krooning'];
+
+let fuel='95', sortMode='smart', activeBrand=null;
+let qFuel='95', rFuel='95', routeDest='', routeWinner=null, qWinner=null;
+
+// ── TAB SWITCH ──
+function switchTab(t) {
+  ['nearby','quick','route'].forEach(p => {
+    document.getElementById('panel-'+p).style.display = p===t ? 'block' : 'none';
+    document.getElementById('tab-'+p).classList.toggle('active', p===t);
+  });
+}
+
+// ── SMART SCORE ──
+function smartScore(s) { return s.price * 0.7 + (s.dist / 10) * 0.3; }
+
+function getSorted(list) {
+  const a = [...list];
+  if (sortMode==='smart') a.sort((x,y) => smartScore(x)-smartScore(y));
+  else if (sortMode==='price') a.sort((x,y) => x.price-y.price);
+  else a.sort((x,y) => x.dist-y.dist);
+  return a;
+}
+
+// ── CHIP HELPERS ──
+function activateChip(groupId, value, prefix) {
+  document.querySelectorAll('#'+groupId+' .chip').forEach(c => {
+    c.classList.toggle('active', c.textContent.trim() === value ||
+      (prefix==='brand' && c.dataset.brand === value));
+    if (prefix==='brand') c.classList.toggle('brand-active', c.dataset.brand === value);
+  });
+}
+
+// ── FUEL ──
+function setFuel(f) {
+  fuel = f;
+  activateChip('fuel-chips', f);
+  renderBrands();
+  renderNearby();
+}
+
+function setQFuel(f) {
+  qFuel = f;
+  activateChip('q-fuel-chips', f);
+}
+
+function setRFuel(f) {
+  rFuel = f;
+  activateChip('r-fuel-chips', f);
+}
+
+// ── SORT ──
+function setSort(s) {
+  sortMode = s;
+  activateChip('sort-chips', {smart:'Parim valik',price:'Odavaim',dist:'Lähim'}[s]);
+  const lbl = {smart:'Soovitatav · hind + kaugus',price:'Hinna järgi',dist:'Kauguse järgi'};
+  document.getElementById('sort-label').textContent = lbl[s];
+  renderNearby();
+}
+
+// ── BRAND ──
+function renderBrands() {
+  const available = new Set((stations[fuel]||[]).map(s => s.brand));
+  const row = document.getElementById('brand-chips');
+  row.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'chip' + (activeBrand===null ? ' active' : '');
+  allBtn.textContent = 'Kõik';
+  allBtn.onclick = () => { activeBrand=null; renderBrands(); renderNearby(); };
+  row.appendChild(allBtn);
+  brands.forEach(b => {
+    if (!available.has(b)) return;
+    const btn = document.createElement('button');
+    btn.dataset.brand = b;
+    btn.className = 'chip' + (activeBrand===b ? ' brand-active' : '');
+    btn.textContent = b;
+    btn.onclick = () => {
+      activeBrand = activeBrand===b ? null : b;
+      renderBrands(); renderNearby();
+    };
+    row.appendChild(btn);
+  });
+}
+
+// ── NAVIGATE ──
+function navTo(name, addr) {
+  window.open('https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(name+' '+addr+' Tallinn'), '_blank');
+}
+
+// ── MODAL ──
+function openModal(s, cheapest) {
+  const diff = (s.price - cheapest).toFixed(3);
+  const save = ((s.price - cheapest)*40).toFixed(2);
+  const modal = document.getElementById('modal');
+  modal.innerHTML = `
+    <div class="modal-head">
+      <div>
+        <div style="font-size:17px;font-weight:600;color:var(--text);margin-bottom:3px;">${s.name}</div>
+        <div style="font-size:13px;color:var(--muted);">${s.addr}, Tallinn · ${s.brand}</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('modal-bg').classList.remove('open')">×</button>
+    </div>
+    <div class="modal-grid">
+      <div class="modal-stat"><div class="modal-stat-val">${s.price.toFixed(3)}</div><div class="modal-stat-key">€/liiter</div></div>
+      <div class="modal-stat"><div class="modal-stat-val">${s.dist}</div><div class="modal-stat-key">km kaugusel</div></div>
+      <div class="modal-stat"><div class="modal-stat-val">${s.min}</div><div class="modal-stat-key">minutit</div></div>
+    </div>
+    <div class="modal-note">${parseFloat(diff)===0 ? 'Hetkel linna odavaim tankla selle kütuse jaoks.' : `Odavaimast ${diff}€/l kallim — 40L tankimisel ${save}€ rohkem.`}</div>
+    <button class="nav-btn" style="width:100%;justify-content:center;" onclick="navTo('${s.name}','${s.addr}')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+      Navigeeri siia
+    </button>`;
+  document.getElementById('modal-bg').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-bg'))
+    document.getElementById('modal-bg').classList.remove('open');
+}
+
+// ── RENDER NEARBY ──
+function renderNearby() {
+  const base = stations[fuel] || [];
+  const filtered = activeBrand ? base.filter(s => s.brand===activeBrand) : base;
+  const sorted = getSorted(filtered);
+  const winner = document.getElementById('winner-area');
+  const list = document.getElementById('station-list');
+  const empty = document.getElementById('empty-msg');
+
+  if (!sorted.length) {
+    winner.innerHTML=''; list.innerHTML=''; empty.style.display='block'; return;
+  }
+  empty.style.display='none';
+
+  const w = sorted[0];
+  const cheapest = Math.min(...filtered.map(s=>s.price));
+  const maxP = Math.max(...filtered.map(s=>s.price));
+  const save = ((maxP-w.price)*40).toFixed(2);
+  const badgeTxt = {smart:'Parim valik',price:'Odavaim',dist:'Lähim'}[sortMode];
+
+  winner.innerHTML = `
+    <div class="winner-card" onclick="openModal(${JSON.stringify(w)},${cheapest})">
+      <div class="winner-badge">
+        <svg width="11" height="11" viewBox="0 0 12 12"><path d="M6 1l1.2 2.5 2.8.4-2 2 .5 2.8L6 7.4 3.5 8.7l.5-2.8-2-2 2.8-.4z" fill="currentColor"/></svg>
+        ${badgeTxt}${activeBrand ? ' · '+activeBrand : ''}
+      </div>
+      <div class="winner-inner">
+        <div style="flex:1">
+          <div class="winner-name">${w.name}</div>
+          <div class="winner-addr">${w.addr}</div>
+          <div class="winner-stats">
+            <div>
+              <div class="price-big">${w.price.toFixed(3)}</div>
+              <div class="price-unit">€/liiter</div>
+            </div>
+            <div class="winner-meta">
+              ${w.dist} km · ${w.min} min<br>
+              ${filtered.length>1?`<strong>säästad kuni ${save}€</strong> / 40L tank`:''}
+            </div>
+          </div>
+        </div>
+        <button class="nav-btn" onclick="event.stopPropagation();navTo('${w.name}','${w.addr}')">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+          Mine
+        </button>
+      </div>
+    </div>`;
+
+  list.innerHTML = '';
+  sorted.slice(1).forEach((s,i) => {
+    const diff = (s.price-cheapest).toFixed(3);
+    const isMore = parseFloat(diff)>0;
+    const el = document.createElement('div');
+    el.className = 'station-card';
+    el.onclick = () => openModal(s, cheapest);
+    el.innerHTML = `
+      <div class="rank">${i+2}</div>
+      <div class="station-info">
+        <div class="station-name">${s.name}</div>
+        <div class="station-sub">${s.dist} km · ${s.min} min</div>
+      </div>
+      <div class="station-price-col">
+        <div class="station-price">${s.price.toFixed(3)}</div>
+        <div class="station-diff ${isMore?'diff-more':'diff-best'}">${isMore?'+'+diff:'odavaim'}</div>
+      </div>`;
+    list.appendChild(el);
+  });
+
+  renderHourly();
+}
+
+function renderHourly() {
+  const hrs = hourly[fuel];
+  const minP = Math.min(...hrs), maxP = Math.max(...hrs);
+  const range = maxP-minP || 0.001;
+  const nowH = new Date().getHours();
+  const bars = document.getElementById('hourly-bars');
+  bars.innerHTML='';
+  hrs.forEach((p,i) => {
+    const h = Math.round(((p-minP)/range)*36+12);
+    const isNow = i===nowH, isMin = p===minP;
+    const bar = document.createElement('div');
+    bar.className = 'hourly-bar' + (isNow?' now':isMin?' cheapest':'');
+    bar.style.height = h+'px';
+    bars.appendChild(bar);
+  });
+  const minH = hrs.indexOf(minP);
+  const tip = document.getElementById('hourly-tip');
+  if (nowH < minH) tip.textContent = `Odavaim täna kell ${minH}:00 — tanka siis kui saad.`;
+  else if (nowH===minH) tip.textContent = 'Praegu on päeva odavaim hind — hea aeg tankida!';
+  else tip.textContent = `Odavaim oli kell ${minH}:00 — järgmine võimalus homme.`;
+}
+
+// ── QUICK ──
+function startQuick() {
+  document.getElementById('q-idle').style.display='none';
+  document.getElementById('q-loading').style.display='block';
+  document.getElementById('q-result').style.display='none';
+  const steps=[['qs1','qs1d'],['qs2','qs2d'],['qs3','qs3d'],['qs4','qs4d']];
+  const msgs=['GPS tuvastab asukohta...','Lähimad tanklad leitud...','Hinnad võrreldud...','Parim valik selge!'];
+  steps.forEach(([s,d])=>{ document.getElementById(s).style.opacity='0.25'; document.getElementById(d).style.background='var(--border2)'; });
+  let i=0;
+  document.getElementById('q-load-txt').textContent=msgs[0];
+  const iv=setInterval(()=>{
+    document.getElementById(steps[i][0]).style.opacity='1';
+    document.getElementById(steps[i][1]).style.background='var(--green)';
+    i++;
+    if(i<msgs.length) document.getElementById('q-load-txt').textContent=msgs[i];
+    if(i>=steps.length) clearInterval(iv);
+  },600);
+  setTimeout(()=>{
+    const sorted=[...stations[qFuel]].sort((a,b)=>smartScore(a)-smartScore(b));
+    qWinner=sorted[0];
+    const maxP=Math.max(...stations[qFuel].map(s=>s.price));
+    const save=((maxP-qWinner.price)*40).toFixed(2);
+    const cheapest=Math.min(...stations[qFuel].map(s=>s.price));
+    document.getElementById('q-winner-card').innerHTML=`
+      <div class="winner-card" style="margin-bottom:0;cursor:default">
+        <div class="winner-badge">
+          <svg width="11" height="11" viewBox="0 0 12 12"><path d="M6 1l1.2 2.5 2.8.4-2 2 .5 2.8L6 7.4 3.5 8.7l.5-2.8-2-2 2.8-.4z" fill="currentColor"/></svg>
+          Parim valik sinu ümbruses
+        </div>
+        <div class="winner-inner">
+          <div style="flex:1">
+            <div class="winner-name">${qWinner.name}</div>
+            <div class="winner-addr">${qWinner.addr}, Tallinn</div>
+            <div class="winner-stats">
+              <div>
+                <div class="price-big">${qWinner.price.toFixed(3)}</div>
+                <div class="price-unit">€/liiter</div>
+              </div>
+              <div class="winner-meta">
+                ${qWinner.dist} km · ${qWinner.min} min<br>
+                <strong>säästad kuni ${save}€</strong> / 40L
+              </div>
+            </div>
+          </div>
+          <button class="nav-btn" onclick="navTo('${qWinner.name}','${qWinner.addr}')">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+            Ava kaardil
+          </button>
+        </div>
+      </div>`;
+    document.getElementById('q-loading').style.display='none';
+    document.getElementById('q-result').style.display='block';
+  },2800);
+}
+
+function resetQuick() {
+  document.getElementById('q-idle').style.display='block';
+  document.getElementById('q-loading').style.display='none';
+  document.getElementById('q-result').style.display='none';
+  qWinner=null;
+}
+
+// ── ROUTE ──
+function showRouteSugg(v) {
+  const box=document.getElementById('route-sugg');
+  if(!v||v.length<1){box.style.display='none';return;}
+  const matches=suggList.filter(s=>s.toLowerCase().startsWith(v.toLowerCase())&&s.toLowerCase()!==v.toLowerCase());
+  if(!matches.length){box.style.display='none';return;}
+  box.innerHTML=matches.slice(0,5).map(m=>`
+    <div class="sugg-item" onclick="selectRoute('${m}')">
+      <svg class="sugg-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7 1C4.8 1 3 2.8 3 5c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4zm0 5.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+      ${m}
+    </div>`).join('');
+  box.style.display='block';
+}
+
+function selectRoute(d) {
+  routeDest=d;
+  document.getElementById('route-input').value=d;
+  document.getElementById('route-sugg').style.display='none';
+  const btn=document.getElementById('r-search-btn');
+  btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer';
+}
+
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#route-input')&&!e.target.closest('#route-sugg'))
+    document.getElementById('route-sugg').style.display='none';
+  const v=document.getElementById('route-input')?.value;
+  if(v&&v.length>1&&!routeDest) {
+    const btn=document.getElementById('r-search-btn');
+    if(btn){btn.disabled=false;btn.style.opacity='1';btn.style.cursor='pointer';}
+  }
+});
+
+function startRoute() {
+  if(!routeDest&&!document.getElementById('route-input').value) return;
+  if(!routeDest) routeDest=document.getElementById('route-input').value;
+  document.getElementById('r-idle').style.display='none';
+  document.getElementById('r-loading').style.display='block';
+  document.getElementById('r-result').style.display='none';
+
+  const steps=[['rs1','rs1d'],['rs2','rs2d'],['rs3','rs3d'],['rs4','rs4d']];
+  const msgs=['GPS asukoht tuvastatud...','Marsruut kaardistatud...','Tanklad teekonnal leitud...','Parim hind valitud!'];
+  steps.forEach(([s,d])=>{document.getElementById(s).style.opacity='0.25';document.getElementById(d).style.background='var(--border2)';});
+  let i=0;
+  document.getElementById('r-load-txt').textContent=msgs[0];
+  const iv=setInterval(()=>{
+    document.getElementById(steps[i][0]).style.opacity='1';
+    document.getElementById(steps[i][1]).style.background='var(--green)';
+    i++;
+    if(i<msgs.length) document.getElementById('r-load-txt').textContent=msgs[i];
+    if(i>=steps.length) clearInterval(iv);
+  },600);
+
+  setTimeout(()=>{
+    const data=routeData[routeDest]||{km:150,h:'1h 30min',stops:[{name:'Neste teekonnal',addr:'maantee ääres',price:1.635,detour:0.2,detourMin:1}]};
+    const sortedStops=[...data.stops].sort((a,b)=>a.price-b.price);
+    routeWinner=sortedStops[0];
+    const maxP=Math.max(...data.stops.map(s=>s.price));
+    const save=((maxP-routeWinner.price)*40).toFixed(2);
+
+    let altsHtml='';
+    sortedStops.slice(1).forEach(s=>{
+      const diff=(s.price-routeWinner.price).toFixed(3);
+      altsHtml+=`
+        <div class="station-card" style="margin-bottom:6px;">
+          <div class="station-info">
+            <div class="station-name">${s.name}</div>
+            <div class="station-sub">${s.detour===0?'Otse teel':s.detour+' km kõrvale'} · ${s.detourMin} min</div>
+          </div>
+          <div class="station-price-col">
+            <div class="station-price">${s.price.toFixed(3)}</div>
+            <div class="station-diff diff-more">+${diff}</div>
+          </div>
+        </div>`;
+    });
+
+    const navUrl='https://www.google.com/maps/dir/?api=1&origin=Tallinn&waypoints='+encodeURIComponent(routeWinner.name+' '+routeWinner.addr+' Eesti')+'&destination='+encodeURIComponent(routeDest+' Eesti');
+
+    document.getElementById('r-result').innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div class="section-label">Marsruut</div>
+          <div style="font-size:16px;font-weight:600;color:var(--text);margin-top:2px;">Tallinn → ${routeDest}</div>
+        </div>
+        <div style="font-size:13px;color:var(--muted);">${data.km} km · ${data.h}</div>
+      </div>
+
+      <div class="route-line">
+        <div class="route-dot start">
+          <svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="3.5" fill="var(--blue)"/></svg>
+        </div>
+        <div style="padding:6px 0 16px;">
+          <div style="font-size:11px;color:var(--hint);">Start</div>
+          <div style="font-size:14px;font-weight:500;color:var(--text);">Tallinn, Kesklinn</div>
+        </div>
+      </div>
+
+      <div class="route-line">
+        <div class="route-dot stop">
+          <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1l1.1 2.3 2.6.4-1.9 1.8.4 2.6L6 6.9 3.8 8.1l.4-2.6L2.3 3.7l2.6-.4z" fill="var(--green)"/></svg>
+        </div>
+        <div class="route-stop-card" onclick="toggleRouteDetail(this)">
+          <div class="route-stop-head">
+            <div>
+              <div class="route-stop-badge">ODAVAIM TEEKONNAL · ${routeWinner.detour===0?'OTSE TEEL':routeWinner.detour+' KM KÕRVALE'}</div>
+              <div class="route-stop-name" style="margin-top:4px;">${routeWinner.name}</div>
+              <div class="route-stop-sub">${routeWinner.addr}</div>
+            </div>
+            <div class="route-stop-price">${routeWinner.price.toFixed(3)}<div style="font-size:10px;color:var(--green);font-weight:400;">€/liiter</div></div>
+          </div>
+          <div class="route-detail" id="route-detail-box">
+            <div class="route-detail-grid">
+              <div><div class="detail-val">${routeWinner.detour.toFixed(1)}</div><div class="detail-key">km teelt kõrvale</div></div>
+              <div><div class="detail-val" style="color:var(--green);">${save}€</div><div class="detail-key">säästad 40L pealt</div></div>
+              <div><div class="detail-val">${routeWinner.detourMin}</div><div class="detail-key">min kaotad</div></div>
+            </div>
+            <button class="nav-btn" style="width:100%;justify-content:center;" onclick="event.stopPropagation();window.open('${navUrl}','_blank')">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+              Navigeeri siia kõigepealt
+            </button>
+          </div>
+        </div>
+      </div>
+
+      ${altsHtml.length ? `<div style="margin:0 0 8px;"><div class="section-label" style="margin-bottom:8px;">Muud tanklad teekonnal</div>${altsHtml}</div>` : ''}
+
+      <div class="route-line">
+        <div class="route-dot end">
+          <svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 2v6M4 6l2 3 2-3" stroke="var(--muted)" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div style="padding:6px 0;">
+          <div style="font-size:11px;color:var(--hint);">Sihtkoht</div>
+          <div style="font-size:14px;font-weight:500;color:var(--text);">${routeDest}</div>
+        </div>
+      </div>
+
+      <button class="nav-btn" style="width:100%;justify-content:center;margin-top:12px;" onclick="window.open('${navUrl}','_blank')">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+        Ava kaardil kogu teekond
+      </button>
+      <button class="outline-btn" onclick="resetRoute()">Muuda sihtkohta</button>
+    `;
+
+    document.getElementById('r-loading').style.display='none';
+    document.getElementById('r-result').style.display='block';
+  },2800);
+}
+
+function toggleRouteDetail(el) {
+  const box=document.getElementById('route-detail-box');
+  box.style.display = box.style.display==='block' ? 'none' : 'block';
+}
+
+function resetRoute() {
+  routeDest=''; routeWinner=null;
+  document.getElementById('route-input').value='';
+  document.getElementById('r-idle').style.display='block';
+  document.getElementById('r-loading').style.display='none';
+  document.getElementById('r-result').style.display='none';
+  const btn=document.getElementById('r-search-btn');
+  btn.disabled=true; btn.style.opacity='0.4'; btn.style.cursor='not-allowed';
+}
+
+// ── INIT ──
+renderBrands();
+renderNearby();
+</script>
+</body>
+</html>
